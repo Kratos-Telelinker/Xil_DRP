@@ -1,6 +1,6 @@
-# MDO_calc — Multi-family MMCM/PLL Clock Calculator + DRP Encoder
+# MDO_ADV_calc — Multi-family MMCM/PLL Clock Calculator + DRP Encoder
 
-`MDO_calc.py` is a command-line tool that computes legal clocking configurations
+`MDO_ADV_calc.py` is a command-line tool that computes legal clocking configurations
 for Xilinx MMCM and PLL primitives across multiple FPGA families, and emits
 DRP register values plus a JSON configuration file suitable for cocotb-based
 dynamic reconfiguration.
@@ -22,13 +22,13 @@ dynamic reconfiguration.
 ## Usage
 
 ```bash
-python MDO_calc.py <family>
+python MDO_ADV_calc.py <family>
 Examples:
 
 bash
-python MDO_calc.py artix7
-python MDO_calc.py ultrascale
-python MDO_calc.py pll7
+python MDO_ADV_calc.py artix7
+python MDO_ADV_calc.py ultrascale
+python MDO_ADV_calc.py pll7
 The script will prompt:
 
 Enter input frequency (MHz):
@@ -115,7 +115,7 @@ This project provides:
 make FAMILY=ultrascale
 This performs:
 
-python3 MDO_calc.py ultrascale  
+python3 MDO_ADV_calc.py ultrascale  
 → generates drp_config.json
 
 Runs cocotb testbench
