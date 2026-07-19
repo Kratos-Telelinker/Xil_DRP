@@ -1,0 +1,27 @@
+{
+  "family": "pll_ultrascale_plus",
+  "type": "PLL",
+  "fin_mhz": 100.0,
+  "fout_mhz": 244.0,
+  "m_int": 61,
+  "m_frac": 0,
+  "d": 5,
+  "o_int": 5,
+  "o_frac": 0,
+  "fvco_mhz": 1220.0,
+  "fpfd_mhz": 20.0,
+  "error_ppm": 0.0,
+  "divclk_high": 3,
+  "divclk_low": 2,
+  "clkfbout_high": 31,
+  "clkfbout_low": 30,
+  "clkout0_high": 3,
+  "clkout0_low": 2,
+  "drp_registers": {
+    "0x14": 0,
+    "0x15": 195,
+    "0x16": 0,
+    "0x01": 0,
+    "0x02": 0
+  }
+}

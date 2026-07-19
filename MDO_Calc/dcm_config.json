@@ -1,0 +1,14 @@
+{
+  "type": "DCM",
+  "fin_mhz": 50.0,
+  "fout_mhz": 200.0,
+  "mult": 4,
+  "div": 1,
+  "fout_actual_mhz": 200.0,
+  "error_ppm": 0.0,
+  "drp_registers": {
+    "0x00": 4,
+    "0x01": 1,
+    "0x02": 1
+  }
+}
