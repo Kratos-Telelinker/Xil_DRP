@@ -3,14 +3,13 @@
 # Coding       : utf-8 
 # Project      : MDO_Calc
 # Package      : 
-# Filename     : DCM_calc.py
-# Date         : 2026-07-19  7:40 a.m.
-# AUTHOR       : krato bdballa@telelinker.com
+# Filename     : MDO_ADV_calc.py
+# Date         : 2026-07-19  6:43 a.m.
+# AUTHOR       : kratos@telelinker.com
 # Organization : Telelinker Logic Solutions
 
-# Copyright � 2024 Telelinker Logic Solutions
-# All rights reserved. 
-
+# Copyright � 2026 Telelinker Logic Solutions
+# All rights reserved.
 # ----------------------------------------------------------------------
 # Description
 """
