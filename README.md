@@ -18,88 +18,100 @@ dynamic reconfiguration.
   - `pll7` (PLLE2_ADV / PLLE2_BASE)
   - `pll_ultrascale`
   - `pll_ultrascale_plus`
+  - 
+## DCM vs MMCM/PLL — Separate Flows
+This repository intentionally separates **DCM** logic from **MMCM/PLL** logic.
 
+### MMCM/PLL (MDO_ADV_calc.py)
+- Uses `M`, `D`, `O` structure:
+  - `FVCO = FIN / D * M`
+  - `FOUT = FVCO / O`
+- Supports:
+  - 7‑Series MMCM
+  - UltraScale / UltraScale+ MMCM (fractional M/O)
+  - 7‑Series PLL
+  - UltraScale / UltraScale+ PLL (integer only)
+- Emits:
+  - `drp_config.json`
+  - DRP registers for MMCM/PLL
+- Driven by:
+  - `drp_driver.py`
+  - `mmcm_drp_wrapper.sv`
+
+### DCM (DCM_calc.py)
+
+- Uses simple multiply/divide:
+  - `FOUT = FIN * MULT / DIV`
+- No fractional support.
+- Different legal frequency ranges and behavior than MMCM/PLL.
+- Emits:
+  - `dcm_config.json`
+  - DRP registers for DCM (e.g., MULT, DIV, CTRL)
+- Driven by:
+  - `dcm_drp_driver.py`
+  - `dcm_drp_wrapper.sv`
+
+### Why separate?
+
+- DCMs are **not** MMCMs or PLLs:
+  - Different internal architecture
+  - Different DRP maps
+  - Different jitter and phase‑shift behavior
+- Mixing DCM math with MMCM/PLL math leads to invalid configurations.
+
+### Running the flows
+
+MMCM/PLL:
 ## Usage
-
-```bash
 python MDO_ADV_calc.py <family>
 Examples:
-
-bash
 python MDO_ADV_calc.py artix7
 python MDO_ADV_calc.py ultrascale
 python MDO_ADV_calc.py pll7
 The script will prompt:
-
 Enter input frequency (MHz):
-
 Enter desired output frequency (MHz):
 
 It then:
-
 Searches for legal M, D, O satisfying:
-
 𝐹VCO = 𝐹IN/(𝐷 ⋅ 𝑀)
 𝐹OUT = 𝐹VCO/𝑂
-
 within the device’s VCO and PFD limits.
 
 For UltraScale MMCM families, it also considers fractional M and O
 with a denominator of 8.
 
 Computes DRP-friendly timing splits (HighTime/LowTime) for:
-
-DIVCLK
-
-CLKFBOUT
-
-CLKOUT0
+      DIVCLK, CLKFBOUT & CLKOUT0
 
 Encodes DRP registers for:
-
-MMCM: 0x14, 0x15, 0x16, 0x01, 0x02
+      MMCM: 0x14, 0x15, 0x16, 0x01, 0x02
 
 PLL:  same addresses, integer-only fields
-
 Writes drp_config.json containing:
-
-family and type (MMCM or PLL)
-
-frequencies and error
-
-M, D, O (integer + fractional parts)
-
-DRP register map
+  family and type (MMCM or PLL)
+  frequencies and error
+  M, D, O (integer + fractional parts)
+  DRP register map
 
 Integration with cocotb
-Use the companion drp_driver.py to:
+      Use the companion drp_driver.py or dcm_drp_driver.py to:
+            Load drp_config.json 
+            Apply DRP writes to target the MMCM/PLL or DCM 
+            Optionally toggle reset and wait for LOCKED
 
-Load drp_config.json
+    Example:
+      python 
+        from drp_driver import load_drp_config, apply_drp_config
+        cfg = load_drp_config("drp_config.json")
+        await apply_drp_config(dut, cfg)
 
-Apply DRP writes to the MMCM/PLL
-
-Optionally toggle reset and wait for LOCKED
-
-Example:
-
-python
-from drp_driver import load_drp_config, apply_drp_config
-
-cfg = load_drp_config("drp_config.json")
-await apply_drp_config(dut, cfg)
-Notes
-DCM structures are not supported; they use different math and DRP maps.
-
-PLL fractional divides are not supported by hardware; fractional logic is
-only used for UltraScale MMCM families.
-
-Always cross-check VCO/PFD ranges against the official device datasheet
-(UG472, UG572, DS181, DS189, etc.) for production designs.
+    Always cross-check VCO/PFD ranges against the official device datasheet
+    (UG472, UG572, DS181, DS189, etc.) for production designs.
 
 # Unified MMCM/PLL DRP Reconfiguration Flow
 
 This project provides:
-
 - A multi-family MMCM/PLL clock calculator (`MDO_calc.py`)
 - Automatic DRP register generation
 - JSON export for simulation
@@ -108,20 +120,16 @@ This project provides:
 - A Makefile and invoke tasks for one-command execution
 
 ## Running the full flow
-
 ### Using Makefile
-
 ```bash
 make FAMILY=ultrascale
 This performs:
-
-python3 MDO_ADV_calc.py ultrascale  
-→ generates drp_config.json
-
-Runs cocotb testbench
-→ applies DRP writes
-→ verifies MMCM/PLL lock
-→ optionally measures output frequency
+    python3 MDO_ADV_calc.py ultrascale  
+      → generates drp_config.json
+    Runs cocotb testbench
+      → applies DRP writes
+      → verifies MMCM/PLL lock
+      → optionally measures output frequency
 
 Using invoke
 bash
