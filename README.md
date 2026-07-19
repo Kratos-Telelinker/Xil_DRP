@@ -152,7 +152,7 @@ Copyright � 2026 Telelinker Logic Solutions
 All rights reserved
 **************************************************
 
-MDO_ADV_calc.py  created: 2026-07-19  6:43 a.m.
+****MDO_ADV_calc.py  created: 2026-07-19  6:43 a.m.
 Usage: python MDO_calc.py <family>
 Families:
   - spartan7
@@ -163,8 +163,13 @@ Families:
   - ultrascale_plus
   - pll7
   - pll_ultrascale
-  - pll_ultrascale_plus
-PS C:\test_MDO> python MDO_ADV_calc.py pll_ultrascale_plus
+  - pll_ultrascale_plus****
+
+
+** Command must be entered with command line parameter <family> as shown below, if not supported family list will be displayed **
+
+
+**PS C:\test_MDO> python MDO_ADV_calc.py pll_ultrascale_plus**
 
 **************************************************
 MDO_ADV_calc.py : Running Python 3.12.0
@@ -221,6 +226,8 @@ DRP registers (hex):
   0x01 : 0x0000
   
   0x02 : 0x0000
+
+
 
 
 DRP configuration written to drp_config.json
