@@ -57,9 +57,33 @@ This repository intentionally separates **DCM** logic from **MMCM/PLL** logic.
   - Different internal architecture
   - Different DRP maps
   - Different jitter and phase‑shift behavior
-- Mixing DCM math with MMCM/PLL math leads to invalid configurations.
+  - Mixing DCM math with MMCM/PLL math leads to invalid configurations.
 
-### Running the flows
+### DCM_calc.py Constraints
+  1. Input clock constraints (FCLKIN)
+    Typical legal range:
+    1 MHz ≤ FCLKIN ≤ 210 MHz
+    Below ~1 MHz the DLL cannot lock
+    Above ~200 MHz the internal delay line cannot track
+
+  2. Output clock constraints (FOUT)
+    1 MHz ≤ FOUT ≤ 210 MHz
+    DCM_CLKGEN uses a digital accumulator + phase interpolator
+    calculator enforces:
+      FOUT_MIN = 1.0
+      FOUT_MAX = 210.0
+  
+  3. Multiply/Divide constraints (M, D)
+      DCM_CLKGEN uses:
+      1 ≤ M ≤ 63
+      1 ≤ D ≤ 63
+      M and D are 6‑bit integer registers
+      No fractional support
+      No extended ranges like MMCM/PLL
+  
+  4. Restart requirement
+     DCM_CLKGEN requires:
+     DCM_RESET or DCM_RESTART after DRP writes
 
 MMCM/PLL:
 ## Usage
@@ -112,65 +136,71 @@ Integration with cocotb
 # Unified MMCM/PLL DRP Reconfiguration Flow
 
 This project provides:
-- A multi-family MMCM/PLL clock calculator (`MDO_calc.py`)
+- A multi-family MMCM/PLL clock calculator (`MDO_ADV_calc.py`)
 - Automatic DRP register generation
 - JSON export for simulation
 - A cocotb DRP driver (`drp_driver.py`)
 - A SystemVerilog MMCM/PLL wrapper (`mmcm_drp_wrapper.sv`)
 - A Makefile and invoke tasks for one-command execution
 
-## Running the full flow
-### Using Makefile
-```bash
-make FAMILY=ultrascale
-This performs:
-    python3 MDO_ADV_calc.py ultrascale  
-      → generates drp_config.json
-    Runs cocotb testbench
-      → applies DRP writes
-      → verifies MMCM/PLL lock
-      → optionally measures output frequency
+Example Run
+PS C:\test_MDO> python MDO_ADV_calc.py
 
-Using invoke
-bash
-invoke all --family=pll7
-Files
-MDO_calc.py  
-Multi-family MMCM/PLL calculator + DRP encoder + JSON export
+**************************************************
+MDO_ADV_calc.py : Running Python 3.12.0
+Copyright � 2026 Telelinker Logic Solutions
+All rights reserved
+**************************************************
 
-drp_driver.py  
-Cocotb driver that loads drp_config.json and performs DRP writes
+MDO_ADV_calc.py  created: 2026-07-19  6:43 a.m.
+Usage: python MDO_calc.py <family>
+Families:
+  - spartan7
+  - artix7
+  - kintex7
+  - virtex7
+  - ultrascale
+  - ultrascale_plus
+  - pll7
+  - pll_ultrascale
+  - pll_ultrascale_plus
+PS C:\test_MDO> python MDO_ADV_calc.py pll_ultrascale_plus
 
-mmcm_drp_wrapper.sv  
-SystemVerilog wrapper exposing DRP ports, reset, and lock
+**************************************************
+MDO_ADV_calc.py : Running Python 3.12.0
+Copyright � 2026 Telelinker Logic Solutions
+All rights reserved
+**************************************************
 
-tests/  
-Cocotb testbench directory
+MDO_ADV_calc.py  created: 2026-07-19  6:43 a.m.
 
-Supported families
-MMCM:
+Selected family: pll_ultrascale_plus (TYPE=PLL)
 
-spartan7, artix7, kintex7, virtex7
+Enter input frequency (MHz): 115
+Enter desired output frequency (MHz): 275.55
 
-ultrascale, ultrascale_plus (fractional)
+=== Clocking Solution ===
+Type     : PLL
+FIN      : 115.000 MHz
+FOUT req : 275.550 MHz
+FOUT act : 275.520833 MHz
+M        : 115.000000 (int=115, frac=0/1)
+D        : 8
+O        : 6.000000 (int=6, frac=0/1)
+FVCO     : 1653.125 MHz
+FPFD     : 14.375 MHz
+Error    : 105.8 ppm
 
-PLL:
+DIVCLK   : high = 4 low = 4
+CLKFBOUT : high = 58 low = 57
+CLKOUT0  : high = 3 low = 3
 
-pll7 (PLLE2_ADV)
+DRP registers (hex):
+  0x14 : 0x0000
+  0x15 : 0x01C7
+  0x16 : 0x0000
+  0x01 : 0x0000
+  0x02 : 0x0000
 
-pll_ultrascale (PLLE3)
+DRP configuration written to drp_config.json
 
-pll_ultrascale_plus (PLLE4)
-
-Output
-drp_config.json contains:
-
-M, D, O (integer + fractional)
-
-FVCO, FPFD, error
-
-DRP register map (0x01–0x16)
-
-Family + type (MMCM or PLL)
-
-This JSON is consumed directly by cocotb.
