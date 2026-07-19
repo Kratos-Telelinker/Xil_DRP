@@ -174,33 +174,106 @@ All rights reserved
 
 MDO_ADV_calc.py  created: 2026-07-19  6:43 a.m.
 
+
 Selected family: pll_ultrascale_plus (TYPE=PLL)
 
 Enter input frequency (MHz): 115
+
 Enter desired output frequency (MHz): 275.55
 
+
 === Clocking Solution ===
+
 Type     : PLL
+
 FIN      : 115.000 MHz
+
 FOUT req : 275.550 MHz
+
 FOUT act : 275.520833 MHz
+
 M        : 115.000000 (int=115, frac=0/1)
+
 D        : 8
+
 O        : 6.000000 (int=6, frac=0/1)
+
 FVCO     : 1653.125 MHz
+
 FPFD     : 14.375 MHz
+
 Error    : 105.8 ppm
 
 DIVCLK   : high = 4 low = 4
+
 CLKFBOUT : high = 58 low = 57
+
 CLKOUT0  : high = 3 low = 3
 
 DRP registers (hex):
+
   0x14 : 0x0000
+  
   0x15 : 0x01C7
+  
   0x16 : 0x0000
+  
   0x01 : 0x0000
+  
   0x02 : 0x0000
+
 
 DRP configuration written to drp_config.json
 
+{
+
+  "family": "pll_ultrascale_plus",
+
+  "type": "PLL",
+  
+  "fin_mhz": 115.0,
+  
+  "fout_mhz": 275.55,
+  
+  "m_int": 115,
+  
+  "m_frac": 0,
+  
+  "d": 8,
+  
+  "o_int": 6,
+  
+  "o_frac": 0,
+  
+  "fvco_mhz": 1653.125,
+  
+  "fpfd_mhz": 14.375,
+  
+  "error_ppm": 105.84890824422784,
+  
+  "divclk_high": 4,
+  
+  "divclk_low": 4,
+  
+  "clkfbout_high": 58,
+  
+  "clkfbout_low": 57,
+  
+  "clkout0_high": 3,
+  
+  "clkout0_low": 3,
+  
+  "drp_registers": {
+  
+    "0x14": 0,
+    
+    "0x15": 455,
+    
+    "0x16": 0,
+    
+    "0x01": 0,
+    
+    "0x02": 0
+  
+  }
+  
