@@ -47,9 +47,7 @@ This repository intentionally separates **DCM** logic from **MMCM/PLL** logic.
 - Emits:
   - `dcm_config.json`
   - DRP registers for DCM (e.g., MULT, DIV, CTRL)
-- Driven by:
-  - `dcm_drp_driver.py`
-  - `dcm_drp_wrapper.sv`
+
 
 ### Why separate?
 
@@ -139,7 +137,8 @@ This project provides:
 - A multi-family MMCM/PLL clock calculator (`MDO_ADV_calc.py`)
 - Automatic DRP register generation
 - JSON export for simulation
-- A cocotb DRP driver (`drp_driver.py`)
+- A cocotb DRP driver files which are currently under development 
+  which are designed for cocotb co-simulation (`drp_driver.py`)
 - A SystemVerilog MMCM/PLL wrapper (`mmcm_drp_wrapper.sv`)
 - A Makefile and invoke tasks for one-command execution
 

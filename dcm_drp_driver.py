@@ -3,9 +3,9 @@
 # Coding       : utf-8 
 # Project      : MDO_Calc
 # Package      : 
-# Filename     : MDO_ADV_calc.py
+# Filename     : dcm_drp_driver.py
 # Date         : 2026-07-19  6:43 a.m.
-# AUTHOR       : kratos@telelinker.com
+# AUTHOR       : Brad Balla kratos@telelinker.com
 # Organization : Telelinker Logic Solutions
 
 # Copyright � 2026 Telelinker Logic Solutions
